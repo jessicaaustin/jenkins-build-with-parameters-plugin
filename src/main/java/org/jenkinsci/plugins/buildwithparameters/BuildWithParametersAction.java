@@ -10,7 +10,6 @@ import hudson.model.ParameterDefinition;
 import hudson.model.ParameterValue;
 import hudson.model.ParametersAction;
 import hudson.model.ParametersDefinitionProperty;
-import hudson.model.StringParameterValue;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.Stapler;
 import org.kohsuke.stapler.StaplerRequest;
@@ -46,7 +45,7 @@ public class BuildWithParametersAction implements Action {
             BuildParameter buildParameter = new BuildParameter(parameterDefinition.getName(), parameterDefinition.getDescription());
 
             try {
-                buildParameter.setValue(((StringParameterValue) parameterDefinition.createValue(Stapler.getCurrentRequest())).value);
+                buildParameter.setValue(parameterDefinition.createValue(Stapler.getCurrentRequest()));
             } catch (IllegalArgumentException ignored) {
                 // If a value was provided that does not match available options, leave the value blank.
             }

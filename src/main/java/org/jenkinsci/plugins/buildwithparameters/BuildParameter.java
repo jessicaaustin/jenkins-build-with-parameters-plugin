@@ -1,5 +1,9 @@
 package org.jenkinsci.plugins.buildwithparameters;
 
+import hudson.model.BooleanParameterValue;
+import hudson.model.ParameterValue;
+import hudson.model.StringParameterValue;
+
 public class BuildParameter {
     private String name, description, value;
 
@@ -20,8 +24,12 @@ public class BuildParameter {
         return value;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setValue(ParameterValue parameterValue) {
+        if (parameterValue instanceof StringParameterValue) {
+            this.value = ((StringParameterValue) parameterValue).value;
+        } else if (parameterValue instanceof BooleanParameterValue) {
+            this.value = String.valueOf(((BooleanParameterValue) parameterValue).value);
+        }
     }
 
 }
