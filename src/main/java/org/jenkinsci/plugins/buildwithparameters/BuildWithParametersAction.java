@@ -10,6 +10,7 @@ import hudson.model.ParameterDefinition;
 import hudson.model.ParameterValue;
 import hudson.model.ParametersAction;
 import hudson.model.ParametersDefinitionProperty;
+import hudson.model.PasswordParameterDefinition;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.Stapler;
 import org.kohsuke.stapler.StaplerRequest;
@@ -43,6 +44,7 @@ public class BuildWithParametersAction implements Action {
 
         for (ParameterDefinition parameterDefinition : getParameterDefinitions()) {
             BuildParameter buildParameter = new BuildParameter(parameterDefinition.getName(), parameterDefinition.getDescription());
+            buildParameter.setPasswordParam(parameterDefinition.getClass().isAssignableFrom(PasswordParameterDefinition.class));
 
             try {
                 buildParameter.setValue(parameterDefinition.createValue(Stapler.getCurrentRequest()));
