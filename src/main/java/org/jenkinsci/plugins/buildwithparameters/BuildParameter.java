@@ -1,13 +1,13 @@
 package org.jenkinsci.plugins.buildwithparameters;
 
-import hudson.model.BooleanParameterValue;
 import hudson.model.ParameterValue;
+import hudson.model.BooleanParameterValue;
 import hudson.model.PasswordParameterValue;
 import hudson.model.StringParameterValue;
-import hudson.util.Secret;
 
 public class BuildParameter {
-    private String name, description, value;
+    private static final String JOB_DEFAULT_PASSWORD_PLACEHOLDER = "job_default_password";
+	private String name, description, value;
     private boolean isPasswordParam;
 
     public BuildParameter(String name, String description) {
@@ -15,6 +15,13 @@ public class BuildParameter {
         this.description = description;
     }
 
+    public static boolean isDefaultPasswordPlaceholder(String candidate) {
+    	if(candidate == null) {
+    		return false;
+    	}
+    	return JOB_DEFAULT_PASSWORD_PLACEHOLDER.equals(candidate);
+    }
+    
     public String getName() {
         return name;
     }
@@ -33,8 +40,7 @@ public class BuildParameter {
         } else if (parameterValue instanceof BooleanParameterValue) {
             this.value = String.valueOf(((BooleanParameterValue) parameterValue).value);
         } else if (parameterValue instanceof PasswordParameterValue) {
-            Secret secret = ((PasswordParameterValue) parameterValue).getValue();
-			this.value = Secret.toString(secret);
+            this.value = JOB_DEFAULT_PASSWORD_PLACEHOLDER;
         }
     }
 

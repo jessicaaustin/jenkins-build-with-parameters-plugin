@@ -11,6 +11,8 @@ import hudson.model.ParameterValue;
 import hudson.model.ParametersAction;
 import hudson.model.ParametersDefinitionProperty;
 import hudson.model.PasswordParameterDefinition;
+import hudson.model.PasswordParameterValue;
+import hudson.util.Secret;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.Stapler;
 import org.kohsuke.stapler.StaplerRequest;
@@ -85,9 +87,20 @@ public class BuildWithParametersAction implements Action {
         JSONObject formData = req.getSubmittedForm();
         if (!formData.isEmpty()) {
             for (ParameterDefinition parameterDefinition : getParameterDefinitions()) {
+                ParameterValue parameterValue = parameterDefinition.createValue(req);
+                if(parameterValue.getClass().isAssignableFrom(PasswordParameterValue.class)) {
+                    Secret secret = ((PasswordParameterValue) parameterValue).getValue();
+                    String jobPassword = Secret.toString(secret);
+                    if(BuildParameter.isDefaultPasswordPlaceholder(jobPassword)) {
+                    	secret = ((PasswordParameterValue) parameterDefinition.getDefaultParameterValue()).getValue();
+                    	String jobDefaultPassword = Secret.toString(secret);
+                    	ParameterValue passwordParameterValue = new PasswordParameterValue(parameterValue.getName(), jobDefaultPassword);
+                    	parameterValue = passwordParameterValue;
+                    }
+                }
                 // This will throw an exception if the provided value is not a valid option for the parameter.
                 // This is the desired behavior, as we want to ensure valid submissions.
-                values.add(parameterDefinition.createValue(req));
+                values.add(parameterValue);
             }
         }
 
