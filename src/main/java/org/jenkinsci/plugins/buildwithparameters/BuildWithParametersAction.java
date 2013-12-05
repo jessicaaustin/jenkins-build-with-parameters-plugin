@@ -49,7 +49,7 @@ public class BuildWithParametersAction implements Action {
             buildParameter.setPasswordParam(parameterDefinition.getClass().isAssignableFrom(PasswordParameterDefinition.class));
 
             try {
-                buildParameter.setValue(parameterDefinition.createValue(Stapler.getCurrentRequest()));
+                buildParameter.setValue(getParameterDefinitionValue(parameterDefinition));
             } catch (IllegalArgumentException ignored) {
                 // If a value was provided that does not match available options, leave the value blank.
             }
@@ -58,6 +58,10 @@ public class BuildWithParametersAction implements Action {
         }
 
         return buildParameters;
+    }
+
+    ParameterValue getParameterDefinitionValue(ParameterDefinition parameterDefinition) {
+        return parameterDefinition.createValue(Stapler.getCurrentRequest());
     }
 
     public String getIconFileName() {
@@ -89,14 +93,7 @@ public class BuildWithParametersAction implements Action {
             for (ParameterDefinition parameterDefinition : getParameterDefinitions()) {
                 ParameterValue parameterValue = parameterDefinition.createValue(req);
                 if(parameterValue.getClass().isAssignableFrom(PasswordParameterValue.class)) {
-                    Secret secret = ((PasswordParameterValue) parameterValue).getValue();
-                    String jobPassword = Secret.toString(secret);
-                    if(BuildParameter.isDefaultPasswordPlaceholder(jobPassword)) {
-                    	secret = ((PasswordParameterValue) parameterDefinition.getDefaultParameterValue()).getValue();
-                    	String jobDefaultPassword = Secret.toString(secret);
-                    	ParameterValue passwordParameterValue = new PasswordParameterValue(parameterValue.getName(), jobDefaultPassword);
-                    	parameterValue = passwordParameterValue;
-                    }
+                    parameterValue = applyDefaultPassword(parameterDefinition, parameterValue);
                 }
                 // This will throw an exception if the provided value is not a valid option for the parameter.
                 // This is the desired behavior, as we want to ensure valid submissions.
@@ -106,6 +103,24 @@ public class BuildWithParametersAction implements Action {
 
         Hudson.getInstance().getQueue().schedule(project, 0, new ParametersAction(values), new CauseAction(new Cause.UserIdCause()));
         rsp.sendRedirect("../");
+    }
+
+
+    ParameterValue applyDefaultPassword(ParameterDefinition parameterDefinition,
+            ParameterValue parameterValue) {
+        String jobPassword = getPasswordValue((PasswordParameterValue)parameterValue);
+        if(!BuildParameter.isDefaultPasswordPlaceholder(jobPassword)) {
+            return parameterValue;
+        }
+        String jobDefaultPassword = getPasswordValue(((PasswordParameterValue) parameterDefinition.getDefaultParameterValue()));
+        ParameterValue passwordParameterValue = new PasswordParameterValue(parameterValue.getName(), jobDefaultPassword);
+        return passwordParameterValue;
+    }
+
+
+    static String getPasswordValue(PasswordParameterValue parameterValue) {
+        Secret secret = parameterValue.getValue();
+        return Secret.toString(secret);
     }
 
 
