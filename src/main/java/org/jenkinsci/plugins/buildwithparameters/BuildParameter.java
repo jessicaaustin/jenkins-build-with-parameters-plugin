@@ -6,9 +6,9 @@ import hudson.model.PasswordParameterValue;
 import hudson.model.StringParameterValue;
 
 public class BuildParameter {
-    private static final String JOB_DEFAULT_PASSWORD_PLACEHOLDER = "job_default_password";
-	private String name, description, value;
+    static final String JOB_DEFAULT_PASSWORD_PLACEHOLDER = "job_default_password";
     private boolean isPasswordParam;
+    private String name, description, value;
 
     public BuildParameter(String name, String description) {
         this.name = name;
@@ -17,11 +17,11 @@ public class BuildParameter {
 
     public static boolean isDefaultPasswordPlaceholder(String candidate) {
     	if(candidate == null) {
-    		return false;
+    	    return false;
     	}
     	return JOB_DEFAULT_PASSWORD_PLACEHOLDER.equals(candidate);
     }
-    
+
     public String getName() {
         return name;
     }
@@ -45,11 +45,10 @@ public class BuildParameter {
     }
 
     public void setPasswordParam(boolean isPasswordParam) {
-		this.isPasswordParam = isPasswordParam;
+        this.isPasswordParam = isPasswordParam;
 	}
     
     public boolean isPasswordParam() {
-		return isPasswordParam;
+        return isPasswordParam;
 	}
-    
 }
