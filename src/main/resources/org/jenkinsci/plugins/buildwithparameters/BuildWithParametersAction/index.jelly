@@ -17,7 +17,10 @@
                                     <f:password name="${parameter.name}" value="${parameter.value}"/>
                                 </j:when>
                                 <j:when test="${parameter.type == 'BOOLEAN'}">
-                                    <f:checkbox name="value" checked="${parameter.value}" />
+                                    <f:checkbox name="${parameter.name}" checked="${parameter.value}" />
+                                </j:when>
+                                <j:when test="${parameter.type == 'TEXT'}">
+                                    <f:textarea name="${parameter.name}" value="${parameter.value}"/>
                                 </j:when>
                                 <j:otherwise>
                                     <f:textbox name="${parameter.name}" value="${parameter.value}"/>

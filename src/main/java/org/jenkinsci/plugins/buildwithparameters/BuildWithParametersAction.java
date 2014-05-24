@@ -12,6 +12,8 @@ import hudson.model.ParametersAction;
 import hudson.model.ParametersDefinitionProperty;
 import hudson.model.PasswordParameterDefinition;
 import hudson.model.PasswordParameterValue;
+import hudson.model.StringParameterDefinition;
+import hudson.model.TextParameterDefinition;
 import hudson.util.Secret;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,7 +50,12 @@ public class BuildWithParametersAction implements Action {
                 buildParameter.setType(BuildParameterType.PASSWORD);
             } else if (parameterDefinition.getClass().isAssignableFrom(BooleanParameterDefinition.class)) {
                 buildParameter.setType(BuildParameterType.BOOLEAN);
+            } else if (parameterDefinition.getClass().isAssignableFrom(StringParameterDefinition.class)) {
+                buildParameter.setType(BuildParameterType.STRING);
+            } else if (parameterDefinition.getClass().isAssignableFrom(TextParameterDefinition.class)) {
+                buildParameter.setType(BuildParameterType.TEXT);
             } else {
+                // default to string
                 buildParameter.setType(BuildParameterType.STRING);
             }
 

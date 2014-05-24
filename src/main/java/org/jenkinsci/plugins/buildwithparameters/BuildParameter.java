@@ -4,6 +4,7 @@ import hudson.model.ParameterValue;
 import hudson.model.BooleanParameterValue;
 import hudson.model.PasswordParameterValue;
 import hudson.model.StringParameterValue;
+import hudson.model.TextParameterValue;
 
 public class BuildParameter {
 
@@ -38,6 +39,8 @@ public class BuildParameter {
     public void setValue(ParameterValue parameterValue) {
         if (parameterValue instanceof StringParameterValue) {
             this.value = ((StringParameterValue) parameterValue).value;
+        } else if (parameterValue instanceof TextParameterValue) {
+            this.value = ((TextParameterValue) parameterValue).value;
         } else if (parameterValue instanceof BooleanParameterValue) {
             this.value = String.valueOf(((BooleanParameterValue) parameterValue).value);
         } else if (parameterValue instanceof PasswordParameterValue) {
