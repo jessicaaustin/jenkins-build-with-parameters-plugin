@@ -1,8 +1,8 @@
 package org.jenkinsci.plugins.buildwithparameters;
 
-
 import hudson.model.AbstractProject;
 import hudson.model.Action;
+import hudson.model.BooleanParameterDefinition;
 import hudson.model.Cause;
 import hudson.model.CauseAction;
 import hudson.model.Hudson;
@@ -13,30 +13,28 @@ import hudson.model.ParametersDefinitionProperty;
 import hudson.model.PasswordParameterDefinition;
 import hudson.model.PasswordParameterValue;
 import hudson.util.Secret;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import javax.servlet.ServletException;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.Stapler;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
-import javax.servlet.ServletException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 public class BuildWithParametersAction implements Action {
+
     private final AbstractProject project;
 
     public BuildWithParametersAction(AbstractProject project) {
         this.project = project;
     }
 
-
     //////////////////
     //              //
     //     VIEW     //
     //              //
     //////////////////
-
     public String getProjectName() {
         return project.getName();
     }
@@ -46,7 +44,13 @@ public class BuildWithParametersAction implements Action {
 
         for (ParameterDefinition parameterDefinition : getParameterDefinitions()) {
             BuildParameter buildParameter = new BuildParameter(parameterDefinition.getName(), parameterDefinition.getDescription());
-            buildParameter.setPasswordParam(parameterDefinition.getClass().isAssignableFrom(PasswordParameterDefinition.class));
+            if (parameterDefinition.getClass().isAssignableFrom(PasswordParameterDefinition.class)) {
+                buildParameter.setType(BuildParameterType.PASSWORD);
+            } else if (parameterDefinition.getClass().isAssignableFrom(BooleanParameterDefinition.class)) {
+                buildParameter.setType(BuildParameterType.BOOLEAN);
+            } else {
+                buildParameter.setType(BuildParameterType.STRING);
+            }
 
             try {
                 buildParameter.setValue(getParameterDefinitionValue(parameterDefinition));
@@ -76,13 +80,11 @@ public class BuildWithParametersAction implements Action {
         return "parambuild";
     }
 
-
     //////////////////
     //              //
     //  SUBMISSION  //
     //              //
     //////////////////
-
     public void doConfigSubmit(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
         project.checkPermission(AbstractProject.BUILD);
 
@@ -92,7 +94,7 @@ public class BuildWithParametersAction implements Action {
         if (!formData.isEmpty()) {
             for (ParameterDefinition parameterDefinition : getParameterDefinitions()) {
                 ParameterValue parameterValue = parameterDefinition.createValue(req);
-                if(parameterValue.getClass().isAssignableFrom(PasswordParameterValue.class)) {
+                if (parameterValue.getClass().isAssignableFrom(PasswordParameterValue.class)) {
                     parameterValue = applyDefaultPassword(parameterDefinition, parameterValue);
                 }
                 // This will throw an exception if the provided value is not a valid option for the parameter.
@@ -105,11 +107,10 @@ public class BuildWithParametersAction implements Action {
         rsp.sendRedirect("../");
     }
 
-
     ParameterValue applyDefaultPassword(ParameterDefinition parameterDefinition,
             ParameterValue parameterValue) {
-        String jobPassword = getPasswordValue((PasswordParameterValue)parameterValue);
-        if(!BuildParameter.isDefaultPasswordPlaceholder(jobPassword)) {
+        String jobPassword = getPasswordValue((PasswordParameterValue) parameterValue);
+        if (!BuildParameter.isDefaultPasswordPlaceholder(jobPassword)) {
             return parameterValue;
         }
         String jobDefaultPassword = getPasswordValue(((PasswordParameterValue) parameterDefinition.getDefaultParameterValue()));
@@ -117,19 +118,16 @@ public class BuildWithParametersAction implements Action {
         return passwordParameterValue;
     }
 
-
     static String getPasswordValue(PasswordParameterValue parameterValue) {
         Secret secret = parameterValue.getValue();
         return Secret.toString(secret);
     }
-
 
     //////////////////
     //              //
     //   HELPERS    //
     //              //
     //////////////////
-
     private List<ParameterDefinition> getParameterDefinitions() {
         ParametersDefinitionProperty property = (ParametersDefinitionProperty) project.getProperty(ParametersDefinitionProperty.class);
         if (property != null && property.getParameterDefinitions() != null) {

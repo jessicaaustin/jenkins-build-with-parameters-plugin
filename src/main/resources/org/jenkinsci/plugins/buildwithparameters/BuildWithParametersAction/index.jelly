@@ -13,11 +13,14 @@
                     <f:entry title="${parameter.name}" description="${parameter.description}">
                         <div>
                             <j:choose>
-                                <j:when test="${!parameter.passwordParam}">
-                                    <f:textbox name="${parameter.name}" value="${parameter.value}"/>
+                                <j:when test="${parameter.type == 'PASSWORD'}">
+                                    <f:password name="${parameter.name}" value="${parameter.value}"/>
+                                </j:when>
+                                <j:when test="${parameter.type == 'BOOLEAN'}">
+                                    <f:checkbox name="value" checked="${parameter.value}" />
                                 </j:when>
                                 <j:otherwise>
-                                    <f:password name="${parameter.name}" value="${parameter.value}"/>
+                                    <f:textbox name="${parameter.name}" value="${parameter.value}"/>
                                 </j:otherwise>
                             </j:choose>
                         </div>
