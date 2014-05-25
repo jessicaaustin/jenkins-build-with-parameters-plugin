@@ -3,8 +3,10 @@ package org.jenkinsci.plugins.buildwithparameters;
 import hudson.model.AbstractProject;
 import hudson.model.Action;
 import hudson.model.BooleanParameterDefinition;
+import hudson.model.BooleanParameterValue;
 import hudson.model.Cause;
 import hudson.model.CauseAction;
+import hudson.model.ChoiceParameterDefinition;
 import hudson.model.Hudson;
 import hudson.model.ParameterDefinition;
 import hudson.model.ParameterValue;
@@ -50,6 +52,9 @@ public class BuildWithParametersAction implements Action {
                 buildParameter.setType(BuildParameterType.PASSWORD);
             } else if (parameterDefinition.getClass().isAssignableFrom(BooleanParameterDefinition.class)) {
                 buildParameter.setType(BuildParameterType.BOOLEAN);
+            } else if (parameterDefinition.getClass().isAssignableFrom(ChoiceParameterDefinition.class)) {
+                buildParameter.setType(BuildParameterType.CHOICE);
+                buildParameter.setChoices(((ChoiceParameterDefinition) parameterDefinition).getChoices());
             } else if (parameterDefinition.getClass().isAssignableFrom(StringParameterDefinition.class)) {
                 buildParameter.setType(BuildParameterType.STRING);
             } else if (parameterDefinition.getClass().isAssignableFrom(TextParameterDefinition.class)) {
@@ -101,7 +106,10 @@ public class BuildWithParametersAction implements Action {
         if (!formData.isEmpty()) {
             for (ParameterDefinition parameterDefinition : getParameterDefinitions()) {
                 ParameterValue parameterValue = parameterDefinition.createValue(req);
-                if (parameterValue.getClass().isAssignableFrom(PasswordParameterValue.class)) {
+                if (parameterValue.getClass().isAssignableFrom(BooleanParameterValue.class)) {
+                    boolean value = (req.getParameter(parameterDefinition.getName()) != null);
+                    parameterValue = ((BooleanParameterDefinition) parameterDefinition).createValue(String.valueOf(value));
+                } else if (parameterValue.getClass().isAssignableFrom(PasswordParameterValue.class)) {
                     parameterValue = applyDefaultPassword(parameterDefinition, parameterValue);
                 }
                 // This will throw an exception if the provided value is not a valid option for the parameter.
