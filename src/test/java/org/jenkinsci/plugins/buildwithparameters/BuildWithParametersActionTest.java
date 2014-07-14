@@ -24,7 +24,7 @@ public class BuildWithParametersActionTest {
         BuildWithParametersAction bwpa = testableProject(pwParamDef);
 
         BuildParameter pwParameter = bwpa.getAvailableParameters().get(0);
-        assertTrue(pwParameter.isPasswordParam());
+        assertTrue(pwParameter.getType()==BuildParameterType.PASSWORD);
     }
 
     private BuildWithParametersAction testableProject(
