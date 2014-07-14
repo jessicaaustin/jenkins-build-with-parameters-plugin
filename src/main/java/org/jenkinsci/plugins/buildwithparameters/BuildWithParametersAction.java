@@ -27,7 +27,10 @@ import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
 public class BuildWithParametersAction implements Action {
-
+    private static final String ICON_FILE_NAME = "clock.png";
+    private static final String DISPLAY_NAME = "Build With Params";
+    private static final String URL_NAME = "parambuild";
+    
     private final AbstractProject project;
 
     public BuildWithParametersAction(AbstractProject project) {
@@ -81,15 +84,15 @@ public class BuildWithParametersAction implements Action {
     }
 
     public String getIconFileName() {
-        return "clock.png";
+        return project.getACL().hasPermission(AbstractProject.BUILD) ? ICON_FILE_NAME : null;
     }
 
     public String getDisplayName() {
-        return "Build With Params";
+        return project.getACL().hasPermission(AbstractProject.BUILD) ? DISPLAY_NAME : null;
     }
 
     public String getUrlName() {
-        return "parambuild";
+        return project.getACL().hasPermission(AbstractProject.BUILD) ? URL_NAME : null;
     }
 
     //////////////////
