@@ -2,6 +2,8 @@ package org.jenkinsci.plugins.buildwithparameters;
 
 import hudson.model.AbstractProject;
 import hudson.model.Action;
+import hudson.model.ParameterValue;
+import hudson.model.AbstractProject;
 import hudson.model.BooleanParameterDefinition;
 import hudson.model.BooleanParameterValue;
 import hudson.model.Cause;
@@ -27,8 +29,6 @@ import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
 public class BuildWithParametersAction implements Action {
-    private static final String ICON_FILE_NAME = "clock.png";
-    private static final String DISPLAY_NAME = "Build With Params";
     private static final String URL_NAME = "parambuild";
     
     private final AbstractProject project;
@@ -84,11 +84,11 @@ public class BuildWithParametersAction implements Action {
     }
 
     public String getIconFileName() {
-        return project.getACL().hasPermission(AbstractProject.BUILD) ? ICON_FILE_NAME : null;
+        return null; // Invisible
     }
 
     public String getDisplayName() {
-        return project.getACL().hasPermission(AbstractProject.BUILD) ? DISPLAY_NAME : null;
+        return null; // Invisible
     }
 
     public String getUrlName() {
