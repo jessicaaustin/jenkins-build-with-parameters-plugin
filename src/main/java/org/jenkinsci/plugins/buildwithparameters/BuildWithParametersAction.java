@@ -2,14 +2,13 @@ package org.jenkinsci.plugins.buildwithparameters;
 
 import hudson.model.AbstractProject;
 import hudson.model.Action;
-import hudson.model.ParameterValue;
-import hudson.model.AbstractProject;
 import hudson.model.BooleanParameterDefinition;
 import hudson.model.BooleanParameterValue;
+import hudson.model.BuildableItem;
 import hudson.model.Cause;
 import hudson.model.CauseAction;
 import hudson.model.ChoiceParameterDefinition;
-import hudson.model.Hudson;
+import hudson.model.Job;
 import hudson.model.ParameterDefinition;
 import hudson.model.ParameterValue;
 import hudson.model.ParametersAction;
@@ -23,17 +22,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.ServletException;
+import jenkins.model.Jenkins;
+import jenkins.model.ParameterizedJobMixIn.ParameterizedJob;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.Stapler;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
-public class BuildWithParametersAction implements Action {
+public class BuildWithParametersAction<T extends Job<?, ?> & ParameterizedJob> implements Action {
     private static final String URL_NAME = "parambuild";
     
-    private final AbstractProject project;
+    private final T project;
 
-    public BuildWithParametersAction(AbstractProject project) {
+    public BuildWithParametersAction(T project) {
         this.project = project;
     }
 
@@ -101,7 +102,7 @@ public class BuildWithParametersAction implements Action {
     //              //
     //////////////////
     public void doConfigSubmit(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
-        project.checkPermission(AbstractProject.BUILD);
+        project.checkPermission(BuildableItem.BUILD);
 
         List<ParameterValue> values = new ArrayList<ParameterValue>();
 
@@ -121,7 +122,7 @@ public class BuildWithParametersAction implements Action {
             }
         }
 
-        Hudson.getInstance().getQueue().schedule(project, 0, new ParametersAction(values), new CauseAction(new Cause.UserIdCause()));
+        Jenkins.getInstance().getQueue().schedule(project, 0, new ParametersAction(values), new CauseAction(new Cause.UserIdCause()));
         rsp.sendRedirect("../");
     }
 

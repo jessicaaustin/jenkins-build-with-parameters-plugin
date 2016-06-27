@@ -31,7 +31,7 @@ public class BuildWithParametersActionTest {
         ParameterDefinition pwParamDef = new PasswordParameterDefinition("n", BuildParameter.JOB_DEFAULT_PASSWORD_PLACEHOLDER, "d");
         BuildWithParametersAction bwpa = testableProject(pwParamDef);
 
-        BuildParameter pwParameter = bwpa.getAvailableParameters().get(0);
+        BuildParameter pwParameter = (BuildParameter) bwpa.getAvailableParameters().get(0);
         assertTrue(pwParameter.getType()==BuildParameterType.PASSWORD);
     }
 
