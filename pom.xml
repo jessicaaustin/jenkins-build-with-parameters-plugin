@@ -22,6 +22,11 @@
 
   <developers>
     <developer>
+        <id>sugonyak_ivan</id>
+        <name>Ivan Sugonyak</name>
+        <email>sugonyak.ivan@gmail.com</email>
+    </developer>
+    <developer>
       <id>jessicaaustin</id>
       <name>Jessica Austin</name>
       <email>jessica@aus10.org</email>
