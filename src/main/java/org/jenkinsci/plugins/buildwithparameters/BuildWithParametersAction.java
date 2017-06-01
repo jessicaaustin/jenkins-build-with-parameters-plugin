@@ -93,7 +93,8 @@ public class BuildWithParametersAction<T extends Job<?, ?> & ParameterizedJob> i
     }
 
     public String getUrlName() {
-        return project.getACL().hasPermission(AbstractProject.BUILD) ? URL_NAME : null;
+        project.checkPermission(BuildableItem.BUILD);
+        return URL_NAME;
     }
 
     //////////////////
