@@ -1,6 +1,6 @@
 package org.jenkinsci.plugins.buildwithparameters;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import hudson.model.ParameterValue;
 import hudson.model.FreeStyleProject;
@@ -19,8 +19,9 @@ import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.JenkinsRule.WebClient;
 
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
+import com.gargoylesoftware.htmlunit.html.HtmlFormUtil;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 public class BuildWithParametersActionTest {
@@ -69,10 +70,10 @@ public class BuildWithParametersActionTest {
     }
 
     private String applyDefaultPasswordHelper(String jobDefaultPassword, String passwordFromRequest) throws IOException {
-        ParameterDefinition pwParamDef = new PasswordParameterDefinition("n", jobDefaultPassword, "d");
+        PasswordParameterDefinition pwParamDef = new PasswordParameterDefinition("n", jobDefaultPassword, "d");
         BuildWithParametersAction bwpa = testableProject(pwParamDef);
 
-        ParameterValue parameterValue = new PasswordParameterValue("n", passwordFromRequest);
+        PasswordParameterValue parameterValue = new PasswordParameterValue("n", passwordFromRequest);
 
         ParameterValue adjustedParamValue = bwpa.applyDefaultPassword(pwParamDef, parameterValue);
         return BuildWithParametersAction.getPasswordValue((PasswordParameterValue)adjustedParamValue);
@@ -90,9 +91,9 @@ public class BuildWithParametersActionTest {
         form.getInputByName("param").setValueAttribute("newValue");
 
         // This does not submit the form for some reason.
-        form.getButtonByCaption("Build").click();
+        HtmlFormUtil.getButtonByCaption(form, "Build").click();
         // Create fake submit instead
-        HtmlElement fakeSubmit = page.createElement("button");
+        DomElement fakeSubmit = page.createElement("button");
         fakeSubmit.setAttribute("type", "submit");
         form.appendChild(fakeSubmit);
         fakeSubmit.click();

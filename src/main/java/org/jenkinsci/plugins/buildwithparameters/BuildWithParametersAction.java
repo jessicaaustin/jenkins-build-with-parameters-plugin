@@ -1,6 +1,5 @@
 package org.jenkinsci.plugins.buildwithparameters;
 
-import hudson.model.AbstractProject;
 import hudson.model.Action;
 import hudson.model.BooleanParameterDefinition;
 import hudson.model.BooleanParameterValue;
@@ -31,7 +30,7 @@ import org.kohsuke.stapler.StaplerResponse;
 
 public class BuildWithParametersAction<T extends Job<?, ?> & ParameterizedJob> implements Action {
     private static final String URL_NAME = "parambuild";
-    
+
     private final T project;
 
     public BuildWithParametersAction(T project) {
@@ -111,11 +110,14 @@ public class BuildWithParametersAction<T extends Job<?, ?> & ParameterizedJob> i
         if (!formData.isEmpty()) {
             for (ParameterDefinition parameterDefinition : getParameterDefinitions()) {
                 ParameterValue parameterValue = parameterDefinition.createValue(req);
-                if (parameterValue.getClass().isAssignableFrom(BooleanParameterValue.class)) {
-                    boolean value = (req.getParameter(parameterDefinition.getName()) != null);
-                    parameterValue = ((BooleanParameterDefinition) parameterDefinition).createValue(String.valueOf(value));
-                } else if (parameterValue.getClass().isAssignableFrom(PasswordParameterValue.class)) {
-                    parameterValue = applyDefaultPassword(parameterDefinition, parameterValue);
+                if (parameterValue != null) {
+                    if (parameterValue.getClass().isAssignableFrom(BooleanParameterValue.class)) {
+                        boolean value = (req.getParameter(parameterDefinition.getName()) != null);
+                        parameterValue = ((BooleanParameterDefinition) parameterDefinition).createValue(String.valueOf(value));
+                    } else if (parameterValue.getClass().isAssignableFrom(PasswordParameterValue.class)) {
+                        parameterValue = applyDefaultPassword((PasswordParameterDefinition) parameterDefinition,
+                                                                (PasswordParameterValue) parameterValue);
+                    }
                 }
                 // This will throw an exception if the provided value is not a valid option for the parameter.
                 // This is the desired behavior, as we want to ensure valid submissions.
@@ -127,13 +129,14 @@ public class BuildWithParametersAction<T extends Job<?, ?> & ParameterizedJob> i
         rsp.sendRedirect("../");
     }
 
-    ParameterValue applyDefaultPassword(ParameterDefinition parameterDefinition,
-            ParameterValue parameterValue) {
+    ParameterValue applyDefaultPassword(PasswordParameterDefinition parameterDefinition,
+            PasswordParameterValue parameterValue) {
         String jobPassword = getPasswordValue((PasswordParameterValue) parameterValue);
         if (!BuildParameter.isDefaultPasswordPlaceholder(jobPassword)) {
             return parameterValue;
         }
-        String jobDefaultPassword = getPasswordValue(((PasswordParameterValue) parameterDefinition.getDefaultParameterValue()));
+        PasswordParameterValue password = (PasswordParameterValue) parameterDefinition.getDefaultParameterValue();
+        String jobDefaultPassword = password != null ? getPasswordValue(password) : "";
         ParameterValue passwordParameterValue = new PasswordParameterValue(parameterValue.getName(), jobDefaultPassword);
         return passwordParameterValue;
     }
