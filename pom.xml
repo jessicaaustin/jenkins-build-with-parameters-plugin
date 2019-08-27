@@ -4,6 +4,7 @@
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
         <version>3.48</version>
+        <relativePath />
     </parent>
 
     <artifactId>build-with-parameters</artifactId>
@@ -57,7 +58,7 @@
         <developerConnection>scm:git:ssh://git@github.com/jenkinsci/build-with-parameters-plugin.git
         </developerConnection>
         <url>https://github.com/jenkinsci/build-with-parameters-plugin</url>
-        <tag>HEAD</tag>
+        <tag>${scmTag}</tag>
     </scm>
 
     <repositories>
