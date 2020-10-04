@@ -29,17 +29,6 @@
         <java.level>8</java.level>
     </properties>
 
-    <distributionManagement>
-        <repository>
-            <id>repo.jenkins-ci.org</id>
-            <url>https://repo.jenkins-ci.org/releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>repo.jenkins-ci.org</id>
-            <url>https://repo.jenkins-ci.org/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
-
     <developers>
         <developer>
             <id>sugonyak_ivan</id>
@@ -61,16 +50,34 @@
         <tag>${scmTag}</tag>
     </scm>
 
-    <repositories>
+    <distributionManagement>
         <repository>
-            <id>repo.jenkins-ci.org</id>
+            <id>maven.jenkins-ci.org</id>
+            <name>jenkinsci-releases</name>
             <url>https://repo.jenkins-ci.org/releases</url>
         </repository>
+        <snapshotRepository>
+            <id>maven.jenkins-ci.org</id>
+            <name>jenkinsci-snapshots</name>
+            <url>https://repo.jenkins-ci.org/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+    
+    <repositories>
+        <repository>
+          <id>repo.jenkins-ci.org-public</id>
+          <url>https://repo.jenkins-ci.org/public/</url>
+        </repository>
+        <repository>
+          <id>repo.jenkins-ci.org-releases</id>
+          <url>https://repo.jenkins-ci.org/releases/</url>
+        </repository>
     </repositories>
+
     <pluginRepositories>
         <pluginRepository>
             <id>repo.jenkins-ci.org</id>
-            <url>https://repo.jenkins-ci.org/releases</url>
+            <url>https://repo.jenkins-ci.org/public/</url>
         </pluginRepository>
     </pluginRepositories>
 
