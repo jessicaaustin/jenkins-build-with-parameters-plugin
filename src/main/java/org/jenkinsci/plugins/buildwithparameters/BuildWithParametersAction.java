@@ -27,6 +27,7 @@ import net.sf.json.JSONObject;
 import org.kohsuke.stapler.Stapler;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.interceptor.RequirePOST;
 
 public class BuildWithParametersAction<T extends Job<?, ?> & ParameterizedJob> implements Action {
     private static final String URL_NAME = "parambuild";
@@ -101,6 +102,7 @@ public class BuildWithParametersAction<T extends Job<?, ?> & ParameterizedJob> i
     //  SUBMISSION  //
     //              //
     //////////////////
+    @RequirePOST
     public void doConfigSubmit(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
         project.checkPermission(BuildableItem.BUILD);
 
