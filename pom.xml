@@ -8,7 +8,7 @@
     </parent>
 
     <artifactId>build-with-parameters</artifactId>
-    <version>${revision}${changelist}</version>
+    <version>1.5.1</version>
     <name>Build With Parameters</name>
     <description>Allows the user to provide parameters for a build in the url, prompting for confirmation before
         triggering the job.
@@ -47,7 +47,7 @@
         <developerConnection>scm:git:ssh://git@github.com/jenkinsci/build-with-parameters-plugin.git
         </developerConnection>
         <url>https://github.com/jenkinsci/build-with-parameters-plugin</url>
-        <tag>${scmTag}</tag>
+        <tag>build-with-parameters-1.5.1</tag>
     </scm>
 
     <distributionManagement>
