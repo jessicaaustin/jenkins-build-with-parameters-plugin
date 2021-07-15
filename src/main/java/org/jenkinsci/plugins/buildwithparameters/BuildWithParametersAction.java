@@ -24,6 +24,7 @@ import javax.servlet.ServletException;
 import jenkins.model.Jenkins;
 import jenkins.model.ParameterizedJobMixIn.ParameterizedJob;
 import net.sf.json.JSONObject;
+import org.jenkinsci.plugins.buildwithparameters.definitions.CredentialParameterDefinition;
 import org.kohsuke.stapler.Stapler;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -63,7 +64,10 @@ public class BuildWithParametersAction<T extends Job<?, ?> & ParameterizedJob> i
                 buildParameter.setType(BuildParameterType.STRING);
             } else if (parameterDefinition.getClass().isAssignableFrom(TextParameterDefinition.class)) {
                 buildParameter.setType(BuildParameterType.TEXT);
-            } else {
+            } else if (parameterDefinition.getClass().isAssignableFrom(CredentialParameterDefinition.class)) {
+                buildParameter.setType(BuildParameterType.CREDENTIAL);
+            }
+            else {
                 // default to string
                 buildParameter.setType(BuildParameterType.STRING);
             }
