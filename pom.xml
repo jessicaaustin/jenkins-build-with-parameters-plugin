@@ -1,53 +1,83 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.jenkins-ci.plugins</groupId>
-    <artifactId>plugin</artifactId>
-    <version>1.498</version>
-    <relativePath>../pom.xml</relativePath>
-  </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.jenkins-ci.plugins</groupId>
+        <artifactId>plugin</artifactId>
+        <version>3.48</version>
+        <relativePath />
+    </parent>
 
-  <artifactId>build-with-parameters</artifactId>
-  <version>1.2-SNAPSHOT</version>
-  <name>Build With Parameters</name>
-  <description>Allows the user to provide parameters for a build in the url, prompting for confirmation before triggering the job.</description>
-  <packaging>hpi</packaging>
-  <url>https://wiki.jenkins-ci.org/display/JENKINS/Build+With+Parameters+Plugin</url>
-  <licenses>
-    <license>
-      <name>MIT license</name>
-      <comments>All source code is under the MIT license.</comments>
-    </license>
-  </licenses>
+    <artifactId>build-with-parameters</artifactId>
+    <version>${revision}${changelist}</version>
+    <name>Build With Parameters</name>
+    <description>Allows the user to provide parameters for a build in the url, prompting for confirmation before
+        triggering the job.
+    </description>
+    <packaging>hpi</packaging>
+    <url>https://wiki.jenkins-ci.org/display/JENKINS/Build+With+Parameters+Plugin</url>
+    <licenses>
+        <license>
+            <name>MIT license</name>
+            <comments>All source code is under the MIT license.</comments>
+        </license>
+    </licenses>
 
-  <developers>
-    <developer>
-      <id>jessicaaustin</id>
-      <name>Jessica Austin</name>
-      <email>jessica@aus10.org</email>
-    </developer>
-  </developers>
+    <properties>
+        <revision>1.6.1</revision>
+        <changelist>-SNAPSHOT</changelist>
+        <jenkins.version>2.60.3</jenkins.version>
+        <java.level>8</java.level>
+    </properties>
 
-  <scm>
-    <connection>scm:git:ssh://github.com/jenkinsci/build-with-parameters-plugin.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com/jenkinsci/build-with-parameters-plugin.git</developerConnection>
-    <url>https://github.com/jenkinsci/build-with-parameters-plugin</url>
-  </scm>
+    <developers>
+        <developer>
+            <id>sugonyak_ivan</id>
+            <name>Ivan Sugonyak</name>
+            <email>sugonyak.ivan@gmail.com</email>
+        </developer>
+        <developer>
+            <id>jessicaaustin</id>
+            <name>Jessica Austin</name>
+            <email>jessica@aus10.org</email>
+        </developer>
+    </developers>
 
+    <scm>
+        <connection>scm:git:ssh://github.com/jenkinsci/build-with-parameters-plugin.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/jenkinsci/build-with-parameters-plugin.git
+        </developerConnection>
+        <url>https://github.com/jenkinsci/build-with-parameters-plugin</url>
+        <tag>${scmTag}</tag>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>maven.jenkins-ci.org</id>
+            <name>jenkinsci-releases</name>
+            <url>https://repo.jenkins-ci.org/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>maven.jenkins-ci.org</id>
+            <name>jenkinsci-snapshots</name>
+            <url>https://repo.jenkins-ci.org/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+    
     <repositories>
         <repository>
-            <id>repo.jenkins-ci.org</id>
-            <url>http://repo.jenkins-ci.org/public/</url>
+          <id>repo.jenkins-ci.org-public</id>
+          <url>https://repo.jenkins-ci.org/public/</url>
         </repository>
         <repository>
-            <id>maven.jenkins-ci.org</id>
-            <url>http://maven.jenkins-ci.org/content/repositories/releases</url>
+          <id>repo.jenkins-ci.org-releases</id>
+          <url>https://repo.jenkins-ci.org/releases/</url>
         </repository>
     </repositories>
+
     <pluginRepositories>
         <pluginRepository>
-            <id>maven.jenkins-ci.org</id>
-            <url>http://maven.jenkins-ci.org/content/repositories/releases</url>
+            <id>repo.jenkins-ci.org</id>
+            <url>https://repo.jenkins-ci.org/public/</url>
         </pluginRepository>
     </pluginRepositories>
 
