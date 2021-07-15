@@ -64,8 +64,6 @@ public class BuildWithParametersAction<T extends Job<?, ?> & ParameterizedJob> i
                 buildParameter.setType(BuildParameterType.STRING);
             } else if (parameterDefinition.getClass().isAssignableFrom(TextParameterDefinition.class)) {
                 buildParameter.setType(BuildParameterType.TEXT);
-            } else if (parameterDefinition.getClass().isAssignableFrom(CredentialParameterDefinition.class)) {
-                buildParameter.setType(BuildParameterType.CREDENTIAL);
             }
             else {
                 // default to string
